@@ -18,9 +18,15 @@ public class GameService {
         return (uniqueId);
     }
 
-    public void createGame(String gameId) {
+    public void createGame(String gameId, String macAddress) {
         ChessGame newChessGame = new ChessGame(gameId);
+        newChessGame.setPlayer1Ip(macAddress);
+        newChessGame.printPlayerIp();
         gameList.put(gameId, newChessGame);
+    }
+
+    public Map<String, ChessGame> getGameList () {
+        return gameList;
     }
 
     public List<String> getGameIdList () {
