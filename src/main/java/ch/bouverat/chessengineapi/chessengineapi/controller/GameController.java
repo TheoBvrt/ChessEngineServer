@@ -1,9 +1,12 @@
 package ch.bouverat.chessengineapi.chessengineapi.controller;
 
+import ch.bouverat.chessengineapi.chessengineapi.model.ChessGame;
 import ch.bouverat.chessengineapi.chessengineapi.service.GameJoinRequest;
 import ch.bouverat.chessengineapi.chessengineapi.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +23,18 @@ public class GameController {
         this.gameIdService = gameIdService;
     }
 
+    @MessageMapping("/update")
+    @SendTo("/topic/game")
+    public String sendMessage () {
+        return ("Server ping");
+    }
+
     @PostMapping("start")
     public ResponseEntity<String> CreateGame(@RequestBody String macAddress) {
         String gameId = gameIdService.generateUniqueId();
         System.out.println(macAddress);
         gameIdService.createGame(gameId, macAddress);
+        sendMessage();
         return ResponseEntity.ok(gameId);
     }
 
@@ -33,10 +43,11 @@ public class GameController {
         String gameId = gameJoinRequest.getGameId();
         String player2Ip = gameJoinRequest.getPlayer2Ip();
 
-        System.out.println(player2Ip);
         if (gameIdService.getGameIdList().contains(gameId)) {
-            gameIdService.getGameList().get(gameId).setPlayer2Ip(player2Ip);
-            gameIdService.getGameList().get(gameId).printPlayerIp();
+            ChessGame chessGame =  gameIdService.getGameList().get(gameId);
+            chessGame.setPlayer2Ip(player2Ip);
+            if (chessGame.gameIsComplete())
+                chessGame.start();
             return ResponseEntity.ok(0);
         } else {
             return ResponseEntity.ok(1);

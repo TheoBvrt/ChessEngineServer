@@ -21,7 +21,6 @@ public class GameService {
     public void createGame(String gameId, String macAddress) {
         ChessGame newChessGame = new ChessGame(gameId);
         newChessGame.setPlayer1Ip(macAddress);
-        newChessGame.printPlayerIp();
         gameList.put(gameId, newChessGame);
     }
 

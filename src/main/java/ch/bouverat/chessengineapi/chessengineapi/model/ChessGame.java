@@ -10,6 +10,7 @@ public class ChessGame {
     }
 
     public void start () {
+        System.out.println("Game " + gameId + " started !");
     }
 
     public void setPlayer1Ip(String id) {
@@ -23,6 +24,9 @@ public class ChessGame {
     public void printPlayerIp() {
         System.out.println("Player 1 " + player1Ip);
         System.out.println("Player 2 " + player2Ip);
+    }
 
+    public boolean gameIsComplete () {
+        return player1Ip != null && player2Ip != null;
     }
 }
