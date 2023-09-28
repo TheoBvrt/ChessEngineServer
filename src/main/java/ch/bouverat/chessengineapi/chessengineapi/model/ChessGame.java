@@ -6,12 +6,15 @@ public class ChessGame {
     private String player2Uuid;
     private String map;
 
+    private int playerToPlay; //0 : White team //1 : Black team
+
     public ChessGame (String gameId) {
         this.gameId = gameId;
     }
 
     public void start () {
         System.out.println("Game " + gameId + " started !");
+        playerToPlay = 0;
     }
 
     public void setPlayer1Ip(String id) {
@@ -20,6 +23,14 @@ public class ChessGame {
 
     public void setPlayer2Ip(String id) {
         player2Uuid = id;
+    }
+
+    public void setPlayerToPlay(int player) {
+        playerToPlay = player;
+    }
+
+    public int getPlayerToPlay() {
+        return playerToPlay;
     }
 
     public void printPlayerIp() {

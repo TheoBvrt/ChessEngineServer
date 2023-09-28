@@ -3,6 +3,7 @@ package ch.bouverat.chessengineapi.chessengineapi.controller;
 import ch.bouverat.chessengineapi.chessengineapi.model.ChessGame;
 import ch.bouverat.chessengineapi.chessengineapi.service.GameJoinRequest;
 import ch.bouverat.chessengineapi.chessengineapi.service.GameService;
+import ch.bouverat.chessengineapi.chessengineapi.service.GameStatusRequest;
 import ch.bouverat.chessengineapi.chessengineapi.service.UpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,11 @@ public class GameController {
 
         if (gameIdService.getGameIdList().contains(gameId)) {
             ChessGame chessGame =  gameIdService.getGameList().get(gameId);
+            if (chessGame.getPlayerToPlay() == 0)
+                chessGame.setPlayerToPlay(1);
+            else if (chessGame.getPlayerToPlay() == 1)
+                chessGame.setPlayerToPlay(0);
+            System.out.println(chessGame.getPlayerToPlay());
             chessGame.updateMap(jsonMap);
         }
     }
@@ -47,6 +53,15 @@ public class GameController {
         } else {
             return ResponseEntity.ok("Error");
         }
+    }
+
+    @PostMapping("get-player-to-play")
+    public ResponseEntity<Integer> getGameStatus(@RequestBody String gameId) {
+        if (gameIdService.getGameIdList().contains(gameId)) {
+            ChessGame chessGame =  gameIdService.getGameList().get(gameId);
+            return ResponseEntity.ok(chessGame.getPlayerToPlay());
+        }
+        return ResponseEntity.ok(-1);
     }
 
     @PostMapping("join")
