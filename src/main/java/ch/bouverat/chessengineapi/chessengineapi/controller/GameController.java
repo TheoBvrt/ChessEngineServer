@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/game")
@@ -23,20 +20,14 @@ public class GameController {
         this.gameIdService = gameIdService;
     }
 
-    @MessageMapping("/update")
-    @SendTo("/topic/game")
-    public String sendMessage () {
-        return ("Server ping");
-    }
-
     @PostMapping("start")
     public ResponseEntity<String> CreateGame(@RequestBody String macAddress) {
         String gameId = gameIdService.generateUniqueId();
         System.out.println(macAddress);
         gameIdService.createGame(gameId, macAddress);
-        sendMessage();
         return ResponseEntity.ok(gameId);
     }
+
 
     @PostMapping("join")
     public ResponseEntity<Integer> JoinGame(@RequestBody GameJoinRequest gameJoinRequest) {
