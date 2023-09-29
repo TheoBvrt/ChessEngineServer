@@ -21,10 +21,14 @@ public class GameController {
     }
 
     @PostMapping("start")
-    public ResponseEntity<String> CreateGame(@RequestBody String macAddress) {
+    public ResponseEntity<String> CreateGame(@RequestBody String uuid) {
         String gameId = gameIdService.generateUniqueId();
-        System.out.println(macAddress);
-        gameIdService.createGame(gameId, macAddress);
+        System.out.println(uuid);
+        gameIdService.createGame(gameId, uuid);
+        if (gameIdService.getGameIdList().contains(gameId)) {
+            ChessGame chessGame =  gameIdService.getGameList().get(gameId);
+            chessGame.createMap();
+        }
         return ResponseEntity.ok(gameId);
     }
 
@@ -33,14 +37,12 @@ public class GameController {
         String gameId = updateRequest.getGameId();
         String jsonMap = updateRequest.getJsonMap();
         System.out.println(gameId);
-
         if (gameIdService.getGameIdList().contains(gameId)) {
             ChessGame chessGame =  gameIdService.getGameList().get(gameId);
             if (chessGame.getPlayerToPlay() == 0)
                 chessGame.setPlayerToPlay(1);
             else if (chessGame.getPlayerToPlay() == 1)
                 chessGame.setPlayerToPlay(0);
-            System.out.println(chessGame.getPlayerToPlay());
             chessGame.updateMap(jsonMap);
         }
     }
